@@ -58,23 +58,28 @@ A processor can identify the processors exhibiting omission errors either if it 
 \State Send your id to everyone \algorithmiccomment{Round 1}
 \State Let S = the set of all processor's ids (include your own) \algorithmiccomment{No message received represented by $\bot$}
 \State Send S to everyone \algorithmiccomment{Round 2}
-\State Let $S_i$ = the set of ids received from $P_i$ $\forall i$ 
+\State Let $S_i$ = the set of ids received from $P_i$ $\forall i$ except those who have a $\bot$ for id in S
 \While {S and all $S_i$s are not equal}
     \For {every processor $P_j$}
         \If {corresponding value in S or any of the sets $S_i$ = $\bot$ or no message received from $P_j$ in this round}
             \State Set value corresponding to $P_j$ in S to $\bot$
         \EndIf
     \EndFor
-    \State Send S to everyone \algorithmiccomment{Round k for some k $\leq$ t}
+    \If {$\bot$ corresponds to own id in S}
+        \State Don't send anything \algorithmiccomment{Round k for some k $\leq$ t + 1}
+    \Else
+        \State Send S to everyone \algorithmiccomment{Round k for some k $\leq$ t + 1}
+    \EndIf
+    \State $S_i$ = the set of ids received from $P_i$ $\forall i$ except those who have a $\bot$ for id in S
 \EndWhile
-\State Output majority of S
+\State Output majority of S (exclude $\bot$ characters)
 \end{algorithmic}
 
 \runtime
 Since the system has t faults there must be around in t + 1 rounds when no new faults occur (by pigeon hole principle) and in this round the termination condition will be satisfied. Therefore this algorithm will terminate in t + 1 rounds.
 
 \correctness
-The algorithm is correct as since there is a round where no new faults occur there will be a point where all the received sets $S_i$ s and S are equal. But then outputing the majority of S for every processor will have the same result as the local set S is identical across all processors. This ensures that the criteria of consensus will be met (triviality due to majority function and validity due to all having same majority). Moreover, this algorithm will have polynomial message complexity as in every round every processor sends a set containing n messages (assuming there is a message for itself as well) and all n processors do so in every round therefore, message complexity = O($n^2$) = poly(n)
+The algorithm is correct as since there is a round where no new faults occur there will be a point where all the received sets $S_i$s and S are equal. But then outputing the majority of S for every processor will have the same result as the local set S is identical across all processors. This ensures that the criteria of consensus will be met (triviality due to majority function and validity due to all having same majority). Moreover, this algorithm will have polynomial message complexity as in every round every processor sends a set containing n messages (assuming there is a message for itself as well) and all n processors do so in every round therefore, message complexity = O($n^2$) = poly(n)
 \end{document}
 
 

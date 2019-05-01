@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  1 MAY 2019 00:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  1 MAY 2019 09:52
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -308,15 +308,15 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 ] (/Users/sjoshi/Documents/Classes/CS 280D/HW 4/HW 4.aux) ) 
 Here is how much of TeX's memory you used:
- 4084 strings out of 492649
- 58111 string characters out of 6129622
- 134677 words of memory out of 5000000
- 7905 multiletter control sequences out of 15000+600000
+ 4088 strings out of 492649
+ 58166 string characters out of 6129622
+ 135677 words of memory out of 5000000
+ 7909 multiletter control sequences out of 15000+600000
  8596 words of font info for 33 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,10n,43p,762b,208s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,10n,43p,761b,208s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on "/Users/sjoshi/Documents/Classes/CS 280D/HW 4/HW 4.pdf" (1 page, 68955 bytes).
+Output written on "/Users/sjoshi/Documents/Classes/CS 280D/HW 4/HW 4.pdf" (1 page, 69288 bytes).
 PDF statistics:
  32 PDF objects out of 1000 (max. 8388607)
  22 compressed objects within 1 object stream
