@@ -1,0 +1,135 @@
+%=======================02-713 LaTeX template, following the 15-210 template==================
+%
+% You don't need to use LaTeX or this template, but you must turn your homework in as
+% a typeset PDF somehow.
+%
+% How to use:
+%    1. Update your information in section "A" below
+%    2. Write your answers in section "B" below. Precede answers for all 
+%       parts of a question with the command "\question{n}{desc}" where n is
+%       the question number and "desc" is a short, one-line description of 
+%       the problem. There is no need to restate the problem.
+%    3. If a question has multiple parts, precede the answer to part x with the
+%       command "\part{x}".
+%    4. If a problem asks you to design an algorithm, use the commands
+%       \algorithm, \correctness, \runtime to precede your discussion of the 
+%       description of the algorithm, its correctness, and its running time, respectively.
+%    5. You can include graphics by using the command \includegraphics{FILENAME}
+%
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[noend]{algpseudocode}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{mathtools}
+\usepackage{fancyhdr}
+\usepackage{algorithmicx}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\setlength{\headheight}{13.6pt}
+\newcommand\question[2]{\vspace{.25in}\hrule\textbf{#1: #2}\vspace{.5em}\hrule\vspace{.10in}}
+\renewcommand\part[1]{\vspace{.10in}\textbf{(#1)}}
+\newcommand\analysis{\vspace{.10in}\textbf{Analysis: }\newline}
+\newcommand\algorithm{\vspace{.10in}\textbf{Algorithm: }}
+\newcommand\correctness{\vspace{.10in}\textbf{Correctness: }\newline}
+\newcommand\runtime{\vspace{.10in}\textbf{Running time: }\newline}
+\pagestyle{fancyplain}
+\lhead{\textbf{\NAME}}
+\chead{\textbf{CS 280D HW\HWNUM}}
+\rhead{\today}
+\begin{document}\raggedright
+%Section A==============Change the values below to match your information==================
+\newcommand\NAME{Siddharth Joshi}  % your name
+\newcommand\HWNUM{}              % the homework number
+%Section B==============Put your answers to the questions below here=======================
+
+% no need to restate the problem --- the graders know which problem is which,
+% but replacing "The First Problem" with a short phrase will help you remember
+% which problem this is when you read over your homeworks to study.
+
+\question{1}{Consensus in 2 processor round-by-round adversary model with constraints on adversary} 
+
+\analysis
+The first part is trivial, if a processor hears something then output that and the processor doesn't hear anything outputs its own bit. 
+The problem considers solving consensus when the two processors know that at some future round the adversary will delete a message on the link between them. This guarantee breaks the symmetry and thus the processors will now have more information that they started off with once this round occurs. In particular, in the round that one processor doesn't receive a message from the other - it can safely declare itself to be the 'leader' i.e. the final output will either be its bit or a function computed on both processors' bits. Moreover it is interesting to notice that in any round if a processor receives a message containing its own id - it can exit knowing safely that either the other processor received the same bit or that the other processor has agreed to the same bit, either case consensus will be achieved. \newline
+
+\algorithm
+In the round immediately after a message is deleted, the 'leader' sends a message indicating that it has reached a consensus by agreeing to its own bit but doesn't output the value of this consensus yet.
+For the follower (a processor that doesn't believe itself to be the leader yet), there are now two scenarios:
+\begin{description}
+\item[It receives a message] 
+This case is trivial as the follower hears the leader tell it the final answer and simply outputs it and continually sends this to its partner. 
+\item[It doesn't receive a message]
+This is more interesting as the follower now thinks it's the leader and will do the same as the original leader, therefore it will send its own bit with a message indicating the belief that it is the leader itself.  
+\end{description}
+
+For the leader, there are now four scenarios:
+\begin{description}
+\item[It receives a message containing its own id]
+It simply outputs this as this means that the follower has already agreed to the the leader's bit. 
+\item[It receives a message simply containing the follower's id (not the same as its own)] 
+It does nothing in this round and continues sending the same message as before - a message indicating its agreement to its own bit and goes on to the next round (where this scenarios cannot exist - hence it must output an answer in the next round).  
+\item[It receives a message from the processor that it thought to be a follower claiming to be a leader]
+But since this processor believes itself to be the leader and then immediately heard this, therefore it didn't receive the other processor's message in the previous round (but thus the other one did) and hence it knows that the true leader is the other processor (as it became a leader earlier) and hence it simply agrees to the message and outputs the bit indicated while continuing to echo back the bit that was agreed to. 
+\item[It doesn't receive a message]
+This case is also trivial, as now the leader knows that the follower received the bit it agreed to and hence it simply outputs this bit. 
+\end{description}
+
+\runtime
+If the adversary deletes a message in the kth round, this algorithm will run for at most k + 2 rounds.  
+
+\newpage
+\question{2}{Solving classical wait-free adversary model on stronger model where adversary can delete two messages on a link such that for every $P_{i}$ and $P_{j}$ at least one's messages can still reach the other} 
+
+\analysis
+Since the latter is a generalization of the latter, it is not immediately obvious that the latter can possible solve the former as there will be cases where a processor will not hear about any new processors but this doesn't mean that it can output its set (as it could in the trivial solution for the former task on the former model of computation)
+
+\algorithm
+Since the constraint on this generalization is that while both links between $P_{i}$ and $P_{j}$ can be deleted there must still be a path in the induced graph from either $P_{i}$ to $P_{j}$ or vice-a-versa. Moreover, since it is known by all processors that at most n processors will participate in this task, it is known that the maximum length of such a path is n -1. 
+Using this understanding the algorithm emerges:
+\begin{algorithmic}
+\State At the beginning of the task, set your counter to 0
+\For {every round until you output}
+\State Send as a message to everyone all the ids you have received as well as your own
+\If {You receive a new id in this round}
+	Reset your counter and add this to the list of ids to broadcast
+\Else
+	Increment counter by 1
+\EndIf
+\If {Counter has reached n - 1 or your set has n processors}
+	Output your set and now simply keep broadcasting ids for the rest of the computation
+\EndIf
+\EndFor
+\end{algorithmic}
+
+\correctness
+This is algorithm is correct as in every round progress is made: either towards n - 1 rounds of 'silence' i.e. no new ids heard or towards a set that contains all ids. Moreover, there is a stopping condition in both cases, therefore the algorithm will make progress and will output for each processor. Furthermore it is easy to see in this way, that every processor $P_{i} either \in S_{j} or P_{j} \in S_{i} or both$ as there must be a path from one to the other at least and and in n - 1 rounds, this path must be completely traversed. 
+\newpage
+
+\question{3}{Bonus Question: Prove in the round by round adversary model, there is at least one 'king' processor in 2 successive rounds}
+
+\analysis
+Using the observation that the problem is significantly easier in the case where the behavior of the adversary is the same in the 2 rounds, the first step was to show that there is a 'king' processor in this case. 
+Notice that the processors that the king processor hears back from are simply the vertices that have a path of at most 2 edges to the vertex representing the king processor in the induced graph
+Proof by contradiction: \newline
+Let v be the vertex with largest in-degree in this graph and let N be the set of vertices that have an edge to v
+
+Assume to the contrary that there is a vertex x that v doesn't 'hear' about it $\implies$ (x, v) doesn't belong to E (the set of edges in the induced graph) but this implies the edge (v, x) must exist. 
+
+Moreover, for any w $\in$ N, there doesn't exist (x, w) therefore the edge (w, x) must exist for every vertex w $\in$ N. 
+
+But this implies that x has in-degree of size greater than that of v. But this is a contradiction as v is the vertex with greatest in-degree. 
+
+Hence the vertex with highest in-degree must necessarily hear about all other vertices, hence there must exist a king processor when the behavior of the adversary is the same in both rounds. 
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
